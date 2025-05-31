@@ -1,9 +1,15 @@
 package ui;
 
 import javax.swing.*;
+
+import dto.Review;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import ui.BookSearchPanel;
+import ui.MyReviewsPanel;
+
 
 public class Dashboard extends JFrame {
     private String user_id;  // 로그인 시 전달받은 user_id
@@ -34,8 +40,8 @@ public class Dashboard extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         mainPanel.add(new JLabel("왼쪽에서 메뉴를 선택하세요."), "default");
-        mainPanel.add(new MyReviewsPanel(user_id), "myReviews");
-        mainPanel.add(new SearchBooksPanel(user_id), "searchBooks");
+        mainPanel.add(new MyReviewsPanel(user_id, this), "myReviews");
+        mainPanel.add(new BookSearchPanel(user_id, this), "searchBooks");
         getContentPane().add(mainPanel, BorderLayout.CENTER);
 
         // 버튼 이벤트
@@ -46,14 +52,45 @@ public class Dashboard extends JFrame {
     }
 
     public void showReviewDetailPanel(Review review) {
-    ReviewDetailPanel detailPanel = new ReviewDetailPanel(this, review);
-    setContentPane(detailPanel);
-    revalidate();
+    String key = "reviewDetail_" + review.getReviewId();
+    boolean exists = false;
+    for (Component comp : mainPanel.getComponents()) {
+        if (key.equals(mainPanel.getLayout().toString())) {
+            exists = true;
+            break;
+        }
+    }
+    if (!exists) {
+        ReviewDetailPanel detailPanel = new ReviewDetailPanel(this, review);
+        mainPanel.add(detailPanel, key);
+    }
+    cardLayout.show(mainPanel, key);
 }
+
+
+    public void showReviewBoard(int bookId, String bookTitle) {
+        ReviewBoardPanel reviewBoardPanel = new ReviewBoardPanel(this, bookId, bookTitle, user_id);
+        mainPanel.add(reviewBoardPanel, "reviewBoard_" + bookId);  // 각 도서별 고유 키로 등록
+        cardLayout.show(mainPanel, "reviewBoard_" + bookId);
+    }
+
+    public void showSearchBooksPanel() {
+        cardLayout.show(mainPanel, "searchBooks");
+    }
+
+    public void showMainMenu() {
+        cardLayout.show(mainPanel, "default");
+    }
+
+    public void showMyReviewsPanel() {
+        cardLayout.show(mainPanel, "myReviews");
+    }
+
 
     // 테스트용 main
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Dashboard("test_user"));
     }
+
 }
 

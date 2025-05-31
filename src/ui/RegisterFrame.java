@@ -61,13 +61,13 @@ public class RegisterFrame extends JFrame {
 
     private void handleRegister() {
         try {
-            String userId = userIdField.getText();
+            String user_id = userIdField.getText();
             String password = new String(passwordField.getPassword());
             String name = nameField.getText();
             int age = Integer.parseInt(ageField.getText());
             String gender = (String) genderBox.getSelectedItem();
 
-            Member member = new Member(userId, password, name, age, gender);
+            Member member = new Member(user_id, password, name, age, gender);
             MemberDAO dao = new MemberDAO();
             boolean success = dao.register(member);
 

@@ -1,16 +1,14 @@
 package ui;
 
 import javax.swing.*;
-
 import dao.MemberDAO;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
     public MainFrame() {
-        setTitle("Carrot Login");
+        setTitle("Carrot Book Review Service");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -20,13 +18,11 @@ public class MainFrame extends JFrame {
         panel.setLayout(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
-        // 상단 타이틀
-        JLabel title = new JLabel("Carrot Login", JLabel.CENTER);
+        JLabel title = new JLabel("Carrot Book Review Service", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 22));
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         panel.add(title, BorderLayout.NORTH);
 
-        // 센터 로그인 입력 영역
         JPanel loginPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         loginPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 10, 40));
         loginPanel.setBackground(Color.WHITE);
@@ -49,7 +45,7 @@ public class MainFrame extends JFrame {
 
         panel.add(loginPanel, BorderLayout.CENTER);
 
-        // 이벤트 처리
+        // ✅ 로그인 버튼 이벤트
         loginBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -59,12 +55,15 @@ public class MainFrame extends JFrame {
                 boolean success = dao.login(id, pw);
                 if (success) {
                     JOptionPane.showMessageDialog(null, "로그인 성공!");
+                    dispose();  // 로그인 창 닫기
+                    new Dashboard(id);  // Dashboard로 전환하면서 로그인한 userId 전달
                 } else {
                     JOptionPane.showMessageDialog(null, "로그인 실패");
                 }
             }
         });
 
+        // 회원가입 버튼 이벤트
         registerBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

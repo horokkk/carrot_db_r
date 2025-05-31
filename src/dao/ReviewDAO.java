@@ -1,80 +1,128 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
+import dao.ReviewDAO;
+import dto.Review;
 import db.DBUtil;
 
+import java.sql.*;
+import java.util.*;
+
 public class ReviewDAO {
-    // 비밀번호 검증
-public boolean verifyReviewOwner(int reviewId, String password) {
-    try (Connection conn = DBUtil.getConnection()) {
-        String sql = "SELECT r.review_id FROM Review r JOIN Member m ON r.member_id = m.member_id " +
-                     "WHERE r.review_id = ? AND m.password = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, reviewId);
-        stmt.setString(2, password);
-        ResultSet rs = stmt.executeQuery();
-        return rs.next();
-    } catch (Exception e) {
-        e.printStackTrace();
+
+    public List<Review> getReviewsByBook(int bookId) {
+        List<Review> list = new ArrayList<>();
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "SELECT r.review_id, r.book_id, m.user_id, r.content, r.rating, r.review_date " +
+                         "FROM Review r JOIN Member m ON r.member_id = m.member_id WHERE r.book_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, bookId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(new Review(
+                    rs.getInt("review_id"),
+                    rs.getInt("book_id"),
+                    rs.getString("user_id"),
+                    rs.getString("content"),
+                    rs.getInt("rating"),
+                    rs.getString("review_date")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+    public boolean verifyReviewOwner(int reviewId, String password) {
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "SELECT m.password FROM Review r JOIN Member m ON r.member_id = m.member_id " +
+                         "WHERE r.review_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, reviewId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return password.equals(rs.getString("password"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
-}
 
-// 리뷰 수정
-public boolean updateReview(int reviewId, String newContent, int newRating) {
-    try (Connection conn = DBUtil.getConnection()) {
-        String sql = "UPDATE Review SET content = ?, rating = ? WHERE review_id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, newContent);
-        stmt.setInt(2, newRating);
-        stmt.setInt(3, reviewId);
-        return stmt.executeUpdate() > 0;
-    } catch (Exception e) {
-        e.printStackTrace();
+    public boolean updateReview(int reviewId, String content, int rating) {
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "UPDATE Review SET content = ?, rating = ? WHERE review_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, content);
+            stmt.setInt(2, rating);
+            stmt.setInt(3, reviewId);
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
-}
 
-// 리뷰 삭제
-public boolean deleteReview(int reviewId) {
-    try (Connection conn = DBUtil.getConnection()) {
-        String sql = "DELETE FROM Review WHERE review_id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, reviewId);
-        return stmt.executeUpdate() > 0;
-    } catch (Exception e) {
-        e.printStackTrace();
+    public boolean deleteReview(int reviewId) {
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "DELETE FROM Review WHERE review_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, reviewId);
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
-}
 
+    // 비밀번호 확인
+    public boolean verifyUserPassword(String userId, String password) {
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "SELECT password FROM Member WHERE user_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return password.equals(rs.getString("password"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-public Review getReviewById(int reviewId) {
+// 리뷰 등록
+public boolean writeReview(int bookId, String userId, String content, int rating, String date) {
     try (Connection conn = DBUtil.getConnection()) {
-        String sql = "SELECT r.*, b.title, m.user_id FROM Review r " +
-                     "JOIN Book b ON r.book_id = b.book_id " +
-                     "JOIN Member m ON r.member_id = m.member_id " +
-                     "WHERE r.review_id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, reviewId);
-        ResultSet rs = stmt.executeQuery();
+        System.out.println("📥 리뷰 등록 시도 중");
+System.out.println("userId: " + userId);
+System.out.println("bookId: " + bookId);
+System.out.println("content: " + content);
+System.out.println("rating: " + rating);
+System.out.println("date: " + date);
+
+        // member_id 얻기
+        String getMemberSql = "SELECT member_id FROM Member WHERE user_id = ?";
+        PreparedStatement getMemberStmt = conn.prepareStatement(getMemberSql);
+        getMemberStmt.setString(1, userId);
+        ResultSet rs = getMemberStmt.executeQuery();
         if (rs.next()) {
-            Review r = new Review();
-            r.setReviewId(rs.getInt(\"review_id\"));
-            r.setBookId(rs.getInt(\"book_id\"));
-            r.setUserId(rs.getString(\"user_id\"));
-            r.setContent(rs.getString(\"content\"));
-            r.setRating(rs.getInt(\"rating\"));
-            r.setDate(rs.getDate(\"review_date\"));
-            r.setTitle(rs.getString(\"title\")); // 도서명
-            return r;
+            int memberId = rs.getInt("member_id");
+
+            String sql = "INSERT INTO Review (book_id, member_id, content, rating, review_date) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, bookId);
+            stmt.setInt(2, memberId);
+            stmt.setString(3, content);
+            stmt.setInt(4, rating);
+            stmt.setString(5, date);
+            return stmt.executeUpdate() > 0;
         }
     } catch (Exception e) {
         e.printStackTrace();
     }
-    return null;
-    
+    return false;
+}
+
 }
