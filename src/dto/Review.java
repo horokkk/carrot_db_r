@@ -17,27 +17,10 @@ public class Review {
         this.date = date;
     }
 
-    public int getReviewId() {
-        return reviewId;
-    }
-
-    public int getBookId() {
-        return bookId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public String getDate() {
-        return date;
-    }
+    public int getReviewId() { return reviewId; }
+    public int getBookId() { return bookId; }
+    public String getUserId() { return userId; }
+    public String getContent() { return content; }
+    public int getRating() { return rating; }
+    public String getDate() { return date; }
 } 

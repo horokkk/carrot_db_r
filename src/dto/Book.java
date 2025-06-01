@@ -13,19 +13,8 @@ public class Book {
         this.authorName = authorName;
     }
 
-    public int getBookId() {
-        return bookId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getGenreName() {
-        return genreName;
-    }
-
-    public String getAuthorName() {
-        return authorName;
-    }
+    public int getBookId() { return bookId; }
+    public String getTitle() { return title; }
+    public String getGenreName() { return genreName; }
+    public String getAuthorName() { return authorName; }
 } 

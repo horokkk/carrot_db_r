@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.*;
 
 public class BookDAO {
+    //도서 검색
     public List<Book> searchBooks(String keyword) {
         List<Book> list = new ArrayList<>();
         try (Connection conn = DBUtil.getConnection()) {
@@ -31,6 +32,7 @@ public class BookDAO {
         return list;
     }
 
+    //도서 추가
     public boolean insertBook(int genreId, int authorId, String title, String publisher) {
     String sql = "INSERT INTO Book (genre_id, author_id, title, publisher) VALUES (?, ?, ?, ?)";
     try (Connection conn = DBUtil.getConnection();
