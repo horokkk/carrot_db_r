@@ -11,28 +11,29 @@ public class ReviewDAO {
 
     //도서별로 리뷰 가져오기
     public List<Review> getReviewsByBook(int bookId) {
-        List<Review> list = new ArrayList<>();
-        try (Connection conn = DBUtil.getConnection()) {
-            String sql = "SELECT r.review_id, r.book_id, m.user_id, r.content, r.rating, r.review_date " +
-                         "FROM Review r JOIN Member m ON r.member_id = m.member_id WHERE r.book_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, bookId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                list.add(new Review(
-                    rs.getInt("review_id"),
-                    rs.getInt("book_id"),
-                    rs.getString("user_id"),
-                    rs.getString("content"),
-                    rs.getInt("rating"),
-                    rs.getString("review_date")
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    List<Review> list = new ArrayList<>();
+    try (Connection conn = DBUtil.getConnection()) {
+        String sql = "SELECT review_id, book_id, user_id, content, rating, review_date " +
+                     "FROM ReviewDetailView WHERE book_id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, bookId);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            list.add(new Review(
+                rs.getInt("review_id"),
+                rs.getInt("book_id"),
+                rs.getString("user_id"),
+                rs.getString("content"),
+                rs.getInt("rating"),
+                rs.getString("review_date")
+            ));
         }
-        return list;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return list;
+    }
+
 
     //사용자별 리뷰 조회
     public boolean verifyReviewOwner(int reviewId, String password) {
@@ -98,7 +99,7 @@ public class ReviewDAO {
     // 리뷰 등록하기
     public boolean writeReview(int bookId, String userId, String content, int rating, String date) {
         try (Connection conn = DBUtil.getConnection()) {
-            
+
         // member_id 얻기
         String getMemberSql = "SELECT member_id FROM Member WHERE user_id = ?";
         PreparedStatement getMemberStmt = conn.prepareStatement(getMemberSql);

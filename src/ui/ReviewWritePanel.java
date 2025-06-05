@@ -53,7 +53,7 @@ public class ReviewWritePanel extends JPanel {
     }
 
     private void handleSubmit() {
-        System.out.println("📢 handleSubmit() 호출됨");
+        System.out.println("handleSubmit() 호출됨");
         String content = contentArea.getText().trim();
         int rating;
 

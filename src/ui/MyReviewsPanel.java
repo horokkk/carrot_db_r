@@ -64,9 +64,10 @@ public class MyReviewsPanel extends JPanel {
         model.setRowCount(0); // 기존 행 초기화
         try (Connection conn = db.DBUtil.getConnection()) {
             String sql = "SELECT r.review_id, b.title, r.content, r.rating, r.review_date " +
-                         "FROM Review r JOIN Book b ON r.book_id = b.book_id " +
-                         "JOIN Member m ON r.member_id = m.member_id " +
-                         "WHERE m.user_id = ?";
+                         "FROM ReviewDetailView r " +
+                         "JOIN Book b ON r.book_id = b.book_id " +
+                         "WHERE r.user_id = ?";
+
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, user_id);
             ResultSet rs = stmt.executeQuery();
