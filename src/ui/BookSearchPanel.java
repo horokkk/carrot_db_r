@@ -31,14 +31,6 @@ public class BookSearchPanel extends JPanel {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
-        JButton addBookButton = new JButton("도서 추가");
-        addBookButton.addActionListener(e -> {
-        BookInsertDialog dialog = new BookInsertDialog(); // 다이얼로그 호출
-        dialog.setVisible(true);
-        });
-        searchPanel.add(addBookButton); // 기존 검색창 옆에 붙이기
-
-
         // Book Table
         bookModel = new DefaultTableModel(new String[]{"ID", "도서명", "장르", "저자", ""}, 0);
         bookTable = new JTable(bookModel) {

@@ -32,24 +32,6 @@ public class BookDAO {
         return list;
     }
 
-    //도서 추가
-    public boolean insertBook(int genreId, int authorId, String title, String publisher) {
-    String sql = "INSERT INTO Book (genre_id, author_id, title, publisher) VALUES (?, ?, ?, ?)";
-    try (Connection conn = DBUtil.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-        stmt.setInt(1, genreId);
-        stmt.setInt(2, authorId);
-        stmt.setString(3, title);
-        stmt.setString(4, publisher);
-
-        return stmt.executeUpdate() > 0;
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return false;
-}
-
     // 장르별 도서 조회
     public List<Book> findByGenre(String genreName) {
         List<Book> list = new ArrayList<>();
