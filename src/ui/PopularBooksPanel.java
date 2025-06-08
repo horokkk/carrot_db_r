@@ -11,8 +11,16 @@ import java.util.List;
 public class PopularBooksPanel extends JPanel {
     public PopularBooksPanel() {
         setLayout(new BorderLayout());
-        String[] cols = {"도서ID", "평균평점", "순위"};
-        DefaultTableModel model = new DefaultTableModel(cols, 0);
+        String[] cols = {"도서ID", "도서명", "평균평점", "순위"};
+        
+        //셀 수정 방지지
+        DefaultTableModel model = new DefaultTableModel(cols, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         JTable table = new JTable(model);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
@@ -20,7 +28,7 @@ public class PopularBooksPanel extends JPanel {
         List<PopularBook> list = new StatsDAO().getPopularBooks();
         for (PopularBook p : list) {
             model.addRow(new Object[]{
-                p.getBookId(), p.getAvgRating(), p.getRank()
+                p.getBookId(), p.getBookTitle(), p.getAvgRating(), p.getRank()
             });
         }
     }

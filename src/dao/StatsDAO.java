@@ -14,14 +14,17 @@ public class StatsDAO {
     // 도서별 평균 평점 및 리뷰 수 조회
     public List<BookReviewStat> getBookReviewStats() {
         List<BookReviewStat> stats = new ArrayList<>();
-        String sql = "SELECT book_id, AVG(rating) AS avg_rating, COUNT(*) AS review_count " +
-                     "FROM Review GROUP BY book_id";
+        String sql = "SELECT r.book_id, b.title, AVG(r.rating) AS avg_rating, COUNT(*) AS review_count " +
+                     "FROM Review r JOIN Book b ON r.book_id = b.book_id " +
+                    "GROUP BY r.book_id, b.title";
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
+
             while (rs.next()) {
                 stats.add(new BookReviewStat(
                     rs.getInt("book_id"),
+                    rs.getString("title"),           
                     rs.getDouble("avg_rating"),
                     rs.getInt("review_count")
                 ));
@@ -32,17 +35,21 @@ public class StatsDAO {
         return stats;
     }
 
+
     // 인기 도서 랭킹 조회 (윈도우 함수 사용)
     public List<PopularBook> getPopularBooks() {
         List<PopularBook> list = new ArrayList<>();
-        String sql = "SELECT book_id, avg_rating, RANK() OVER (ORDER BY avg_rating DESC) AS rank_no " +
-                     "FROM (SELECT book_id, AVG(rating) AS avg_rating FROM Review GROUP BY book_id) AS t";
+        String sql = "SELECT t.book_id, b.title, t.avg_rating, " +
+                     "RANK() OVER (ORDER BY t.avg_rating DESC) AS rank_no " +
+                     "FROM (SELECT book_id, AVG(rating) AS avg_rating FROM Review GROUP BY book_id) AS t " +
+                     "JOIN Book b ON t.book_id = b.book_id";
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 list.add(new PopularBook(
                     rs.getInt("book_id"),
+                    rs.getString("title"),               // 도서명 추가
                     rs.getDouble("avg_rating"),
                     rs.getInt("rank_no")
                 ));
@@ -52,6 +59,7 @@ public class StatsDAO {
         }
         return list;
     }
+
 
     // 연령별 장르 선호 통계 조회 (ROLLUP 사용)
     public List<AgeGenreStat> getAgeGenreStats() {

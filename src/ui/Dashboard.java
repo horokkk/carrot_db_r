@@ -15,6 +15,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import ui.BookSearchPanel;
 import ui.MyReviewsPanel;
+import ui.BookReviewStatsPanel;
+import ui.PopularBooksPanel;
+import ui.AgeGenreStatsPanel;
+
 
 
 public class Dashboard extends JFrame {
@@ -34,20 +38,18 @@ public class Dashboard extends JFrame {
 
         // 왼쪽 메뉴 패널
         JPanel menuPanel = new JPanel();
-        menuPanel.setLayout(new GridLayout(6, 1));
+        menuPanel.setLayout(new GridLayout(5, 1));
         JButton myReviewsBtn = new JButton("나의 리뷰");
         JButton searchBooksBtn = new JButton("도서 검색");
         JButton popularBtn = new JButton("인기 도서 랭킹");    // 신규
         JButton statsBtn = new JButton("리뷰 통계");           // 신규
         JButton ageGenreBtn = new JButton("연령별 장르 선호"); // 신규
-        JButton genreClassifyBtn = new JButton("장르 분류");   // 신규
         
         menuPanel.add(myReviewsBtn);
         menuPanel.add(searchBooksBtn);
         menuPanel.add(statsBtn);   // 신규
         menuPanel.add(popularBtn);   // 신규
         menuPanel.add(ageGenreBtn);   // 신규
-        menuPanel.add(genreClassifyBtn);   // 신규
         getContentPane().add(menuPanel, BorderLayout.WEST);
 
         // 메인 카드 패널 (화면 전환)
@@ -61,7 +63,6 @@ public class Dashboard extends JFrame {
         mainPanel.add(new BookReviewStatsPanel(),      "stats");   // 신규
         mainPanel.add(new PopularBooksPanel(),         "popular");   // 신규
         mainPanel.add(new AgeGenreStatsPanel(),        "ageGenre");   // 신규
-        mainPanel.add(new GenreClassificationPanel(),  "genreClassify");   // 신규
         
         getContentPane().add(mainPanel, BorderLayout.CENTER);
 
@@ -71,7 +72,6 @@ public class Dashboard extends JFrame {
         statsBtn.addActionListener(e -> cardLayout.show(mainPanel, "stats"));   // 신규
         popularBtn.addActionListener(e -> cardLayout.show(mainPanel, "popular"));   // 신규
         ageGenreBtn.addActionListener(e -> cardLayout.show(mainPanel, "ageGenre"));   // 신규
-        genreClassifyBtn.addActionListener(e -> cardLayout.show(mainPanel, "genreClassify"));   // 신규
 
         setVisible(true);
     }
