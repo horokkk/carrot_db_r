@@ -38,8 +38,7 @@ public class ReviewBoardPanel extends JPanel {
         }
         };
         table = new JTable(model);
-        JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
+        add(new JScrollPane(table), BorderLayout.CENTER); //수정
 
         // 🔽 하단 버튼 패널
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -47,10 +46,9 @@ public class ReviewBoardPanel extends JPanel {
         JButton backButton = new JButton("← 도서 검색으로 돌아가기");
 
         writeReviewButton.addActionListener(e -> {
-            ReviewWritePanel writePanel = new ReviewWritePanel(dashboard, bookId, userId, bookTitle);
-            dashboard.setContentPane(writePanel);
-            dashboard.revalidate();
+            dashboard.showReviewWritePanel(bookId, bookTitle);
         });
+
 
         backButton.addActionListener(e -> dashboard.showSearchBooksPanel());
 
