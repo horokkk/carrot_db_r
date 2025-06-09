@@ -7,9 +7,6 @@ import java.sql.*;
 import db.DBUtil;
 
 public class MemberDAO {
-    private static final String URL = "jdbc:mysql://localhost:3306/carrot_db?serverTimezone=UTC";
-    private static final String USER = "root";
-    private static final String PASSWORD = "0118";
 
     //회원가입
        public boolean register(Member member) {
@@ -37,7 +34,7 @@ public class MemberDAO {
     //로그인
     public boolean login(String user_id, String password) {
     String sql = "SELECT * FROM Member WHERE user_id = ? AND password = ?";
-    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+    try (Connection conn = DBUtil.getConnection();
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
         pstmt.setString(1, user_id);
