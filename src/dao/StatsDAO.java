@@ -16,7 +16,9 @@ public class StatsDAO {
         List<BookReviewStat> stats = new ArrayList<>();
         String sql = "SELECT r.book_id, b.title, AVG(r.rating) AS avg_rating, COUNT(*) AS review_count " +
                      "FROM Review r JOIN Book b ON r.book_id = b.book_id " +
-                    "GROUP BY r.book_id, b.title";
+                    "GROUP BY r.book_id, b.title " +
+                    "HAVING COUNT(*) >= 1 "+
+                    "ORDER BY r.book_id";
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery()) {
