@@ -78,7 +78,8 @@ public class StatsDAO {
                      "JOIN Member m ON r.member_id = m.member_id " +
                      "JOIN Book b ON r.book_id = b.book_id " +
                      "JOIN Genre g ON b.genre_id = g.genre_id " +
-                     "GROUP BY ROLLUP(age_group, g.genre_name)";
+                     "GROUP BY age_group, g.genre_name " + 
+                     "WITH ROLLUP";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
