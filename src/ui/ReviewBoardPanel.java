@@ -68,7 +68,7 @@ public class ReviewBoardPanel extends JPanel {
                     String date = model.getValueAt(row, 4).toString();
 
                     Review review = new Review(reviewId, bookId, reviewerId, content, rating, date);
-                    dashboard.showReviewDetailPanel(review);
+                    dashboard.showReviewDetailPanel(review, bookTitle);
                 }
             }
         });

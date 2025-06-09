@@ -14,8 +14,8 @@ public class StatsDAO {
     // 도서별 평균 평점 및 리뷰 수 조회
     public List<BookReviewStat> getBookReviewStats() {
         List<BookReviewStat> stats = new ArrayList<>();
-        String sql = "SELECT r.book_id, b.title, AVG(r.rating) AS avg_rating, COUNT(*) AS review_count " +
-                     "FROM Review r JOIN Book b ON r.book_id = b.book_id " +
+        String sql ="SELECT r.book_id, b.title, AVG(r.rating) AS avg_rating, COUNT(*) AS review_count " +
+                    "FROM Review r JOIN Book b ON r.book_id = b.book_id " +
                     "GROUP BY r.book_id, b.title " +
                     "HAVING COUNT(*) >= 1 "+
                     "ORDER BY r.book_id";

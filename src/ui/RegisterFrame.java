@@ -74,11 +74,16 @@ public class RegisterFrame extends JFrame {
             if (success) {
                 JOptionPane.showMessageDialog(this, "회원가입 성공!");
                 dispose();
+                new MainFrame();
             } else {
                 JOptionPane.showMessageDialog(this, "회원가입 실패! 중복된 ID 또는 DB 오류.");
+                dispose();
+                new MainFrame();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "오류 발생: " + e.getMessage());
+            dispose();
+            new MainFrame();
         }
     }
 }

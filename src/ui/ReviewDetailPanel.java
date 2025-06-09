@@ -10,15 +10,18 @@ import java.awt.event.ActionEvent;
 public class ReviewDetailPanel extends JPanel {
     private Dashboard dashboard;
     private Review review;
+    private String bookTitle; 
+
 
     private JTextArea contentArea;
     private JTextField ratingField;
     private JTextField dateField;
     private JPasswordField pwField;
 
-    public ReviewDetailPanel(Dashboard dashboard, Review review) {
+    public ReviewDetailPanel(Dashboard dashboard, Review review, String bookTitle) {
         this.dashboard = dashboard;
         this.review = review;
+        this.bookTitle = bookTitle;
         setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("리뷰 상세 보기", SwingConstants.CENTER);
@@ -54,7 +57,7 @@ public class ReviewDetailPanel extends JPanel {
         JButton updateBtn = new JButton("수정");
         JButton deleteBtn = new JButton("삭제");
 
-        backBtn.addActionListener(e -> dashboard.showMyReviewsPanel());
+        backBtn.addActionListener(e -> dashboard.showReviewBoard(review.getBookId(), bookTitle));
         updateBtn.addActionListener(this::handleUpdate);
         deleteBtn.addActionListener(this::handleDelete);
 

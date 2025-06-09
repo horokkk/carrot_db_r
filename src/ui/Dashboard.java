@@ -77,7 +77,7 @@ public class Dashboard extends JFrame {
     }
     
 
-    public void showReviewDetailPanel(Review review) {
+    public void showReviewDetailPanel(Review review, String bookTitle) {
     String key = "reviewDetail_" + review.getReviewId();
     boolean exists = false;
     for (Component comp : mainPanel.getComponents()) {
@@ -87,7 +87,7 @@ public class Dashboard extends JFrame {
         }
     }
     if (!exists) {
-        ReviewDetailPanel detailPanel = new ReviewDetailPanel(this, review);
+        ReviewDetailPanel detailPanel = new ReviewDetailPanel(this, review, bookTitle);
         mainPanel.add(detailPanel, key);
     }
     cardLayout.show(mainPanel, key);
